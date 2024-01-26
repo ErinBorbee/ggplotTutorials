@@ -1,0 +1,103 @@
+---
+title: "Distribution Plots"
+output: html_document
+date: "2024-01-11"
+---
+If you dont have ggplot2 and reshape2 installed run this chunk of code before proceeding to the next step. If you have these installed continue to the next section of code.
+
+```{r}
+install.packages("ggplot2", repos = "http://cran.us.r-project.org")
+install.packages("reshape2", repos = "http://cran.us.r-project.org")
+install.packages("truncnorm", repos = "http://cran.us.r-project.org")
+install.packages("ggridges", repos = "http://cran.us.r-project.org")
+install.packages("viridis", repos = "http://cran.us.r-project.org")
+```
+
+This chunk of code will load packages and create a data frame with random numbers. We will then calculate average and standard deviation for each variable and format the data for plotting purposes.
+
+```{r}
+library(ggplot2)
+library(reshape2)
+library(truncnorm)
+library(ggridges)
+library(viridis)
+
+A <- c(rtruncnorm(100/2, a=200, b=400, mean=300, sd=50), rtruncnorm(100/2, a=300, b=400, mean=365, sd=75))
+B <- c(rtruncnorm(100/4, a=300, b=500, mean=450, sd=60), rtruncnorm(100/4, a=250, b=500, mean=400, sd=40), rtruncnorm(100/2, a=325, b=500, mean=425, sd=100))
+C <- c(rtruncnorm(100, a = 200, b = 400, mean = 300, sd = 50))
+data <- data.frame(A,B,C)
+data_long <- melt(data)
+
+avg_data <- aggregate(value~variable, data = data_long, mean)
+names(avg_data)[2] <- "average"
+stdev_data <- aggregate(value~variable, data = data_long, sd)
+names(stdev_data)[2] <-  "stdev"
+summary_data <- merge(avg_data, stdev_data, by = "variable")
+summary_data$ymin <- summary_data$average - summary_data$stdev
+summary_data$ymax <- summary_data$average + summary_data$stdev
+```
+
+The first graph we are going to build is a barplot with standard deviation error bars.
+```{r}
+barplot <- ggplot(summary_data, aes(variable, average)) + geom_bar(stat = "identity") + geom_errorbar(aes(ymin = ymin, ymax = ymax), width = 0.25)
+barplot
+```
+The next graph we are going to build is a boxplot of the same data.
+```{r}
+boxplot <- ggplot(data_long, aes(variable, value)) + geom_boxplot()
+boxplot
+```
+Now we're going to add points into our boxplot to see how the data are distributed within the boxplot.
+```{r}
+boxplot <- ggplot(data_long, aes(variable, value)) + geom_boxplot() + geom_point(position = position_jitter(width = 0.2))
+boxplot
+```
+The next plot type is a violin plot. This will allow us to see shape in our data that is otherwise hidden by boxplots.
+```{r}
+violin_plot <- ggplot(data_long, aes(variable, value)) + geom_violin() + geom_point(position = position_jitter(width = 0.2))
+violin_plot
+```
+Now let's layer a boxplot on top of the violin to provide both statistical information and distribution information for our dataset
+```{r}
+violin_boxplot <- ggplot(data_long, aes(variable, value)) + geom_violin() + geom_boxplot(width = 0.2) + geom_point(position = position_jitter(width = 0.2))
+violin_boxplot
+```
+Now that we have the graph made lets customize the appearance. First we will set a theme that removes the grey background and grid lines from our figure.
+```{r}
+theme_set(theme_bw() + theme(panel.grid = element_blank()))
+```
+Now that we have our theme set, let's replot our graph.
+```{r}
+violin_boxplot
+```
+Now let's customize the colors and appearance of the violins, boxes, and points. We will use fill to change the fill color of the violins, boxes, and points, alpha to change the opacity of the objects, color to change the color of the lines in the figure, and pch to change the shape of the point to a circle with outline and fill.
+```{r}
+violin_boxplot <- ggplot(data_long, aes(variable, value, fill = variable, color = variable)) + geom_violin(alpha = 0.5) + geom_boxplot(width = 0.2, alpha = 0.5) + geom_point(position = position_jitter(width = 0.2), alpha = 0.5)
+violin_boxplot
+```
+Now let's customize the fill colors, by finding colors using one of the color resources we went over last week.
+```{r}
+violin_boxplot <- ggplot(data_long, aes(variable, value, fill = variable, color = variable)) + geom_violin(alpha = 0.5) + geom_boxplot(width = 0.2, alpha = 0.5) + geom_point(position = position_jitter(width = 0.2), alpha = 0.5) + scale_fill_manual(values =  c('A' = "#13ac8a",'B' = "#9a3a85", 'C' = "#ec7847")) + scale_color_manual(values =  c('A' = "#13ac8a",'B' = "#9a3a85", 'C' = "#ec7847"))
+violin_boxplot
+```
+Another distribution plot that can be useful for plotting density based data are density plots or ridgeline plots. Let's start with a basic density plot.
+```{r}
+density_plot <- ggplot(data_long, aes(x = value)) + geom_density(fill = "#13ac8a", color = "#13ac8a", alpha = 0.5)
+density_plot
+```
+Now let's make a ridgeline plot that separates these data by categorical group.
+```{r}
+ridge_plot <- ggplot(data_long, aes(value, variable, fill = variable, color = variable)) + geom_density_ridges() + theme_ridges() + scale_fill_manual(values =  c('A' = "#13ac8a",'B' = "#9a3a85", 'C' = "#ec7847")) + scale_color_manual(values =  c('A' = "#13ac8a",'B' = "#9a3a85", 'C' = "#ec7847"))
+ridge_plot
+```
+We can also change the shapes of these plots to histogram like visuals.
+```{r}
+ridge_plot <- ggplot(data_long, aes(value, variable, fill = variable, color = variable)) + geom_density_ridges(stat = "binline") + theme_ridges() + scale_fill_manual(values =  c('A' = "#13ac8a",'B' = "#9a3a85", 'C' = "#ec7847")) + scale_color_manual(values =  c('A' = "#13ac8a",'B' = "#9a3a85", 'C' = "#ec7847"))
+ridge_plot
+```
+Or since these data are on continuous scale we can also color the distribution on a gradient according to that scale.
+```{r}
+ridge_plot <- ggplot(data_long, aes(value, variable, fill = ..x..)) + geom_density_ridges_gradient() + theme_ridges() + scale_fill_viridis(name = "value", option = "plasma")
+ridge_plot
+```
+
