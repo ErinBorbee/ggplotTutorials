@@ -16,6 +16,8 @@ This code begins by introducing how to use `facet_grid()` and `facet_wrap()` to 
 #### Mapping
 This script shows how to plot maps in ggplot using built in map datasets first and then using high resolution datasets from GADM. Using GADM, we plot multiple layers of data, country, state, and county levels. In plotting these maps, we demonstrate how to set your x and y axis ranges to crop your figure to a specific region. Finally, we downloaded river and terrain shapefiles for our geographic area and plotted those on top of our map to create a more detailed image.
 
+Texas river and terrain data source: https://www.twdb.texas.gov/mapping/gisdata.asp 
+
 #### Combining plots & Interactive plotting
 These commands show how to use `ggarrange()` to incorpporate multiple graphs into a single figure and label them. The second portion of this script shows how to use the Plotly package to transform your ggplots into interactive plots that provide data or statistical information when hovering over the graph and datapoints. 
 
