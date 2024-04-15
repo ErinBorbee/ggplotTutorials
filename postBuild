@@ -1,2 +1,3 @@
-install.packages("viridis")
-install.packages("ggridges")
+#!bin/bash
+R install.packages("viridis")
+R install.packages("ggridges")
