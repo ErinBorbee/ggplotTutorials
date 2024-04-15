@@ -5,4 +5,13 @@ dependencies:
   - r-tidyverse
   - r-viridis
   - r-ggridges
-  
+  - r-ggbubr
+  - r-gghalves
+  - r-vegan
+  - r-reshape2
+  - r-raster
+  - r-mapproj
+  - r-sf
+  - r-tidyterra
+  - r-geodata
+  - r-plotly
