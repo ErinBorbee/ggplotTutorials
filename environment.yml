@@ -12,6 +12,5 @@ dependencies:
   - r-raster
   - r-mapproj
   - r-sf
-  - r-tidyterra
   - r-geodata
   - r-plotly
