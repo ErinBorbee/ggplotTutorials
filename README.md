@@ -1,3 +1,5 @@
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/ErinBorbee/ggplotTutorials/HEAD)
+
 # ggplot Tutorials
 This repository contains jupyter notbooks with code tutorials on building different types of graphs in R. These tutorials were originally designed for students in a data visualization course at Texas State University, who had little to no experience with ggplot prior to the course. The majority of these tutorials use the example datasets built into R like the `iris` and `mtcars` datasets. For the ones that use datasets not provided by R the data input is also provided in this repository. 
 
