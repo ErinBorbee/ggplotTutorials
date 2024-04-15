@@ -5,7 +5,7 @@ dependencies:
   - r-tidyverse
   - r-viridis
   - r-ggridges
-  - r-ggbubr
+  - r-ggpubr
   - r-gghalves
   - r-vegan
   - r-reshape2
